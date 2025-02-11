@@ -20,7 +20,7 @@ const Login = () => {
 
     try {
       // Send login request to backend
-      const response = await axios.post('http://localhost:5000/login', {
+      const response = await axios.post('https://test-for-dm.vercel.app/api/login', {
         email,
         password
       });

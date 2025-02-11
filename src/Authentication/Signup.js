@@ -26,7 +26,7 @@ const Signup = () => {
 
     try {
       // Send signup request to backend (you may need to implement the backend signup logic)
-      const response = await axios.post('http://localhost:5000/signup', {
+      const response = await axios.post('https://test-for-dm.vercel.app/api/signup', {
         email,
         password
       });
