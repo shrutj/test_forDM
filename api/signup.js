@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const bcrypt = require('bcryptjs');
 
 // MySQL Connection
 const pool = mysql.createPool({
@@ -33,20 +32,13 @@ module.exports = async (req, res) => {
           return res.status(400).json({ message: 'Email already in use' });
         }
 
-        // Hash the password
-        bcrypt.hash(password, 10, (err, hashedPassword) => {
+        // Insert new user into the database (No bcrypt hashing)
+        pool.execute('INSERT INTO user_accounts (email, password) VALUES (?, ?)', [email, password], (err, result) => {
           if (err) {
-            return res.status(500).json({ message: 'Error hashing password', error: err });
+            return res.status(500).json({ message: 'Error creating user', error: err });
           }
 
-          // Insert new user into the database
-          pool.execute('INSERT INTO user_accounts (email, password) VALUES (?, ?)', [email, hashedPassword], (err, result) => {
-            if (err) {
-              return res.status(500).json({ message: 'Error creating user', error: err });
-            }
-
-            res.status(200).json({ message: 'Account created successfully' });
-          });
+          res.status(200).json({ message: 'Account created successfully' });
         });
       });
     } catch (error) {

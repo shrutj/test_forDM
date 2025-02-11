@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const bcrypt = require('bcryptjs');
 
 // MySQL Connection
 const pool = mysql.createPool({
@@ -35,18 +34,12 @@ module.exports = async (req, res) => {
 
         const user = results[0];
 
-        // Compare hashed password
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-          if (err) {
-            return res.status(500).json({ message: 'Error comparing passwords', error: err });
-          }
-
-          if (isMatch) {
-            res.status(200).json({ message: 'Login successful', userId: user.id });
-          } else {
-            res.status(400).json({ message: 'Invalid credentials' });
-          }
-        });
+        // Check if the password matches (no bcrypt used)
+        if (password === user.password) {
+          res.status(200).json({ message: 'Login successful', userId: user.id });
+        } else {
+          res.status(400).json({ message: 'Invalid credentials' });
+        }
       });
     } catch (error) {
       console.error('Error during login:', error);
